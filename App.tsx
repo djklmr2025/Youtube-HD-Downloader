@@ -9,6 +9,10 @@ import { fetchPlaylists, fetchPlaylistItems, fetchUserProfile } from './services
 import { Loader2, LogOut, User } from 'lucide-react';
 
 const CLIENT_ID_STORAGE_KEY = 'beatvault_client_id';
+const ENV_CLIENT_ID =
+  (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined) ||
+  (import.meta.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string | undefined) ||
+  '';
 
 // Main Application Content
 // This component handles the authenticated experience.
@@ -165,7 +169,18 @@ const AppContent: React.FC<{
 
 export default function App() {
   const [clientId, setClientId] = useState<string>(() => {
-    return localStorage.getItem(CLIENT_ID_STORAGE_KEY) || '';
+    const storedClientId = localStorage.getItem(CLIENT_ID_STORAGE_KEY);
+
+    if (storedClientId) {
+      return storedClientId;
+    }
+
+    if (ENV_CLIENT_ID) {
+      localStorage.setItem(CLIENT_ID_STORAGE_KEY, ENV_CLIENT_ID);
+      return ENV_CLIENT_ID;
+    }
+
+    return '';
   });
 
   const updateClientId = (id: string) => {
