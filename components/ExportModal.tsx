@@ -83,7 +83,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ items, onClose }) => {
 
   // Generate blob URL for playlist
   const fileUrl = React.useMemo(() => {
-    const urls = items.map(item => `https://www.youtube.com/watch?v=${item.snippet.resourceId?.videoId}`).join('\n');
+    const urls = items.map(item => `https://www.youtube.com/watch?v=${item.contentDetails?.videoId}`).join('\n');
     const blob = new Blob([urls], { type: 'text/plain' });
     return URL.createObjectURL(blob);
   }, [items]);
