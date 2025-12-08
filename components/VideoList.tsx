@@ -137,7 +137,8 @@ export const VideoList: React.FC<VideoListProps> = ({ playlist, items, onBack, o
                                 {item.snippet.videoOwnerChannelTitle || item.snippet.channelTitle}
                             </p>
                             <div className="text-xs text-slate-600 mt-1 font-mono">
-                                https://youtu.be/{item.snippet.resourceId?.videoId}
+                                https://youtu.be/{contentDetails.130
+                              ?.videoId}
                             </div>
                         </div>
                     </div>
