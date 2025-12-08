@@ -51,7 +51,7 @@ export const fetchPlaylistItems = async (accessToken: string, playlistId: string
 
   do {
     const params = new URLSearchParams({
-      part: 'snippet',
+      part: 'snippe,contentDetails'',
       playlistId: playlistId,
       maxResults: '50',
       pageToken: nextPageToken,
