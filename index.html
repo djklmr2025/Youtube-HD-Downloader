@@ -1,72 +1,449 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BeatVault - YouTube Playlist Downloader</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-          colors: {
-            slate: {
-              850: '#151e2e',
-              900: '#0f172a',
-              950: '#020617',
-            },
-            brand: {
-              400: '#818cf8',
-              500: '#6366f1',
-              600: '#4f46e5',
-            }
-          }
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Playlist URL Extractor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 800px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
-  </script>
-  <style>
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
+
+    h1 {
+      color: #1a1a2e;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      text-align: center;
     }
 
-    ::-webkit-scrollbar-track {
-      background: #0f172a;
+    .subtitle {
+      color: #667eea;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 16px;
     }
 
-    ::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 4px;
+    .input-group {
+      margin-bottom: 20px;
     }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: #475569;
+    label {
+      display: block;
+      color: #1a1a2e;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 10px;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .results {
+      margin-top: 30px;
+      display: none;
+    }
+
+    .results.show {
+      display: block;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .results-title {
+      color: #1a1a2e;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .count {
+      background: #667eea;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 300px;
+      padding: 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      resize: vertical;
+      margin-bottom: 15px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .error {
+      background: #fee;
+      border: 2px solid #fcc;
+      color: #c33;
+      padding: 14px;
+      border-radius: 12px;
+      margin-top: 15px;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+      animation: shake 0.5s ease-out;
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-10px);
+      }
+
+      75% {
+        transform: translateX(10px);
+      }
+    }
+
+    .info {
+      background: #e3f2fd;
+      border: 2px solid #90caf9;
+      color: #1565c0;
+      padding: 14px;
+      border-radius: 12px;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .info strong {
+      display: block;
+      margin-bottom: 5px;
     }
   </style>
-  <script type="importmap">
-{
-  "imports": {
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "@react-oauth/google": "https://aistudiocdn.com/@react-oauth/google@^0.12.2"
-  }
-}
-</script>
 </head>
 
-<body class="bg-slate-950 text-white antialiased h-screen overflow-hidden">
-  <div id="root" class="h-full flex flex-col"></div>
-  <script type="module" src="/index.tsx"></script>
+<body>
+  <div class="container">
+    <h1>🎵 YouTube Playlist Extractor</h1>
+    <p class="subtitle">Extrae URLs de videos de cualquier playlist de YouTube</p>
+
+    <div class="input-group">
+      <label for="playlistUrl">URL de la Playlist de YouTube:</label>
+      <input type="text" id="playlistUrl" placeholder="https://www.youtube.com/playlist?list=...">
+    </div>
+
+    <button class="btn" id="extractBtn">Extraer URLs</button>
+
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>Extrayendo URLs...</p>
+    </div>
+
+    <div class="error" id="error"></div>
+
+    <div class="info">
+      <strong>📌 Cómo usar:</strong>
+      1. Copia el URL de cualquier playlist pública de YouTube<br>
+      2. Pégalo en el campo de arriba<br>
+      3. Haz clic en "Extraer URLs"<br>
+      4. Copia o descarga la lista de enlaces
+    </div>
+
+    <div class="results" id="results">
+      <div class="results-header">
+        <span class="results-title">URLs Extraídas:</span>
+        <span class="count" id="count">0 videos</span>
+      </div>
+      <textarea id="urlList" readonly></textarea>
+      <div class="action-buttons">
+        <button class="btn btn-secondary" id="copyBtn">📋 Copiar Todo</button>
+        <button class="btn" id="downloadBtn">💾 Descargar .txt</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const playlistInput = document.getElementById('playlistUrl');
+    const extractBtn = document.getElementById('extractBtn');
+    const loading = document.getElementById('loading');
+    const error = document.getElementById('error');
+    const results = document.getElementById('results');
+    const urlList = document.getElementById('urlList');
+    const count = document.getElementById('count');
+    const copyBtn = document.getElementById('copyBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    function showError(message) {
+      error.textContent = message;
+      error.classList.add('show');
+      setTimeout(() => error.classList.remove('show'), 5000);
+    }
+
+    function extractPlaylistId(url) {
+      const regex = /[?&]list=([^&]+)/;
+      const match = url.match(regex);
+      return match ? match[1] : null;
+    }
+
+    async function fetchPlaylistData(playlistId) {
+      try {
+        // Usamos la API pública de YouTube sin autenticación
+        const response = await fetch(
+          `https://www.youtube.com/playlist?list=${playlistId}`
+        );
+        const html = await response.text();
+
+        // Extraer datos del HTML
+        const videoIds = [];
+        const regex = /"videoId":"([^"]+)"/g;
+        let match;
+
+        while ((match = regex.exec(html)) !== null) {
+          if (!videoIds.includes(match[1])) {
+            videoIds.push(match[1]);
+          }
+        }
+
+        return videoIds;
+      } catch (err) {
+        throw new Error('No se pudo acceder a la playlist. Verifica que sea pública.');
+      }
+    }
+
+    extractBtn.addEventListener('click', async () => {
+      const url = playlistInput.value.trim();
+
+      if (!url) {
+        showError('Por favor ingresa un URL de playlist');
+        return;
+      }
+
+      const playlistId = extractPlaylistId(url);
+
+      if (!playlistId) {
+        showError('URL inválido. Asegúrate de que sea un enlace de playlist de YouTube');
+        return;
+      }
+
+      // Mostrar loading
+      loading.classList.add('show');
+      results.classList.remove('show');
+      error.classList.remove('show');
+      extractBtn.disabled = true;
+
+      try {
+        const videoIds = await fetchPlaylistData(playlistId);
+
+        if (videoIds.length === 0) {
+          throw new Error('No se encontraron videos en la playlist');
+        }
+
+        // Generar URLs
+        const urls = videoIds.map(id => `https://www.youtube.com/watch?v=${id}`);
+
+        // Mostrar resultados
+        urlList.value = urls.join('\n');
+        count.textContent = `${urls.length} video${urls.length !== 1 ? 's' : ''}`;
+        results.classList.add('show');
+
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        loading.classList.remove('show');
+        extractBtn.disabled = false;
+      }
+    });
+
+    copyBtn.addEventListener('click', () => {
+      urlList.select();
+      document.execCommand('copy');
+
+      const originalText = copyBtn.textContent;
+      copyBtn.textContent = '✅ Copiado!';
+      setTimeout(() => {
+        copyBtn.textContent = originalText;
+      }, 2000);
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const text = urlList.value;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'youtube-playlist-urls.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      const originalText = downloadBtn.textContent;
+      downloadBtn.textContent = '✅ Descargado!';
+      setTimeout(() => {
+        downloadBtn.textContent = originalText;
+      }, 2000);
+    });
+
+    // Permitir Enter para extraer
+    playlistInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        extractBtn.click();
+      }
+    });
+  </script>
 </body>
 
 </html>

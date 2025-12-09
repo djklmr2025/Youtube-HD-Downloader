@@ -1,127 +1,82 @@
-# BeatVault - YouTube Playlist Downloader
+# 🎵 YouTube Playlist URL Extractor
 
-Una aplicación moderna para gestionar y descargar playlists de YouTube.
+Una herramienta simple y efectiva para extraer URLs de videos de playlists de YouTube.
 
-## 🚀 Despliegue en Vercel
+## ✨ Características
 
-### Paso 1: Configurar Variables de Entorno
+- ✅ **Sin APIs ni autenticación** - Funciona directamente
+- ✅ **100% gratis** - No requiere claves de API
+- ✅ **Extracción rápida** - Obtén todas las URLs en segundos
+- ✅ **Copiar o descargar** - Copia al portapapeles o descarga como .txt
+- ✅ **Interfaz moderna** - Diseño limpio y fácil de usar
+- ✅ **Responsive** - Funciona en móvil, tablet y desktop
 
-Después de importar el proyecto en Vercel, necesitas configurar las siguientes variables de entorno:
+## 🚀 Cómo usar
 
-1. Ve a tu proyecto en Vercel Dashboard
-2. Navega a **Settings** → **Environment Variables**
-3. Agrega la siguiente variable:
+1. **Obtén el URL de la playlist**
+   - Ve a YouTube y abre cualquier playlist pública
+   - Copia el URL de la barra de direcciones
+   - Ejemplo: `https://www.youtube.com/playlist?list=PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf`
 
-```
-VITE_GOOGLE_CLIENT_ID=tu-google-client-id-aqui
-```
+2. **Extrae las URLs**
+   - Pega el URL en el campo de entrada
+   - Haz clic en "Extraer URLs"
+   - Espera unos segundos
 
-### Paso 2: Obtener Google Client ID
+3. **Usa los resultados**
+   - **Copiar**: Haz clic en "📋 Copiar Todo" para copiar todas las URLs
+   - **Descargar**: Haz clic en "💾 Descargar .txt" para guardar un archivo
 
-Para obtener un Google Client ID:
+## 🌐 Despliegue
 
-1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
-2. Crea un nuevo proyecto o selecciona uno existente
-3. Habilita la **YouTube Data API v3**
-4. Ve a **Credentials** → **Create Credentials** → **OAuth 2.0 Client ID**
-5. Configura el tipo de aplicación como **Web application**
-6. En **Authorized JavaScript origins**, agrega:
-   - `http://localhost:3000` (para desarrollo local)
-   - `https://tu-dominio.vercel.app` (tu dominio de Vercel)
-7. En **Authorized redirect URIs**, agrega:
-   - `http://localhost:3000`
-   - `https://tu-dominio.vercel.app`
-8. Copia el **Client ID** generado
+### Vercel (Recomendado)
 
-### Paso 3: Redesplegar
+Este proyecto está configurado para desplegarse automáticamente en Vercel:
 
-Después de agregar las variables de entorno:
+1. Conecta tu repositorio de GitHub a Vercel
+2. Vercel detectará automáticamente la configuración
+3. El sitio estará disponible en minutos
 
-1. Ve a **Deployments** en Vercel
-2. Haz clic en los tres puntos del último deployment
-3. Selecciona **Redeploy**
+**No se requieren variables de entorno ni configuración adicional.**
 
-## 🛠️ Desarrollo Local
+### Local
 
-### Instalación
+Para probar localmente, simplemente abre `index.html` en tu navegador.
 
-```bash
-npm install
-```
+## 📋 Casos de uso
 
-### Configuración
+- Descargar videos de una playlist con herramientas externas (yt-dlp, 4K Video Downloader, etc.)
+- Crear backups de listas de reproducción
+- Compartir listas de videos
+- Migrar playlists entre plataformas
 
-1. Copia `.env.example` a `.env`:
-```bash
-cp .env.example .env
-```
+## 🛠️ Tecnologías
 
-2. Edita `.env` y agrega tu Google Client ID:
-```
-VITE_GOOGLE_CLIENT_ID=tu-google-client-id-aqui
-```
+- HTML5
+- CSS3 (Gradientes, animaciones, glassmorphism)
+- JavaScript Vanilla (sin dependencias)
 
-### Ejecutar en desarrollo
+## ⚠️ Limitaciones
 
-```bash
-npm run dev
-```
+- Solo funciona con playlists **públicas**
+- Requiere que la playlist sea accesible sin iniciar sesión
+- No descarga videos, solo extrae URLs
 
-La aplicación estará disponible en `http://localhost:3000`
+## 📝 Notas
 
-### Build para producción
+Esta herramienta extrae URLs analizando el HTML público de YouTube. No utiliza la API oficial, por lo que:
+- ✅ No requiere API key
+- ✅ No tiene límites de cuota
+- ⚠️ Puede dejar de funcionar si YouTube cambia su estructura HTML
 
-```bash
-npm run build
-```
+## 🤝 Uso con otras herramientas
 
-### Preview del build
-
-```bash
-npm run preview
-```
-
-## 📋 Características
-
-- ✅ Autenticación con Google OAuth
-- ✅ Visualización de playlists de YouTube
-- ✅ Descarga de información de videos
-- ✅ Exportación de datos
-- ✅ Interfaz moderna y responsive
-- ✅ Modo oscuro
-
-## 🔧 Tecnologías
-
-- React 19
-- TypeScript
-- Vite
-- Tailwind CSS
-- YouTube Data API v3
-- Google OAuth
-
-## 📝 Notas Importantes
-
-- La aplicación requiere un Google Client ID válido para funcionar
-- Asegúrate de que el dominio de Vercel esté autorizado en Google Cloud Console
-- Las variables de entorno deben estar configuradas en Vercel para que la aplicación funcione en producción
-
-## 🐛 Solución de Problemas
-
-### Pantalla negra en Vercel
-
-Si ves una pantalla negra:
-1. Verifica que `VITE_GOOGLE_CLIENT_ID` esté configurado en Vercel
-2. Asegúrate de que el dominio de Vercel esté autorizado en Google Cloud Console
-3. Revisa los logs de deployment en Vercel
-4. Verifica la consola del navegador para errores
-
-### Error de OAuth
-
-Si obtienes errores de OAuth:
-1. Verifica que el Client ID sea correcto
-2. Asegúrate de que el dominio esté en la lista de orígenes autorizados
-3. Limpia el caché del navegador y vuelve a intentar
+Las URLs extraídas pueden usarse con:
+- **yt-dlp**: `yt-dlp -a urls.txt`
+- **youtube-dl**: `youtube-dl -a urls.txt`
+- **4K Video Downloader**: Importar lista
+- **JDownloader**: Agregar URLs
 
 ## 📄 Licencia
 
-MIT
+MIT - Uso libre
