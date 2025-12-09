@@ -5,10 +5,31 @@ Extrae **TODOS** los videos de cualquier playlist de YouTube sin límites y sin 
 ## ✨ Características
 
 - ✅ **100% de los videos** - Sin límite de 100
-- ✅ **Sin API Key** - No requiere configuración de Google Cloud
+- ✅ **Sin API Key** - No requiere configuración de Google Cloud  
 - ✅ **Scroll automático** - Simula navegación real
 - ✅ **Múltiples formatos** - JSON, CSV, TXT, DLC
 - ✅ **Rápido y confiable** - Usa Selenium WebDriver
+- ✅ **Validación automática** - Detecta duplicados y errores
+- ✅ **Logging completo** - Reportes detallados de progreso
+- ✅ **CLI avanzado** - Argumentos personalizables
+
+## 📦 Versiones Disponibles
+
+### 1. **Versión Web (`index.html`)** - Recomendado para uso rápido
+- 3 métodos de extracción
+- Interfaz gráfica intuitiva
+- No requiere instalación
+
+### 2. **Script Básico (`extract_playlist.py`)** - Simple y directo
+- Extracción automática
+- Genera 4 formatos de salida
+
+### 3. **Script Avanzado (`extract_playlist_advanced.py`)** ⭐ **RECOMENDADO**
+- Logging completo con archivos de log
+- Validación de duplicados
+- Detección inteligente de scroll
+- CLI con múltiples opciones
+- Reportes detallados de progreso
 
 ## 📋 Requisitos
 
@@ -42,6 +63,51 @@ Por defecto extrae la playlist: `PLCYBQp7vbvBHqtaozeouLD9ek-GuiMcjo`
 ### Método 2: Con URL personalizada
 ```bash
 python extract_playlist.py "https://www.youtube.com/playlist?list=TU_PLAYLIST_ID"
+```
+
+### Método 3: Versión Avanzada (RECOMENDADO) ⭐
+
+#### Uso básico:
+```bash
+python extract_playlist_advanced.py
+```
+
+#### Con URL personalizada:
+```bash
+python extract_playlist_advanced.py "https://www.youtube.com/playlist?list=TU_PLAYLIST_ID"
+```
+
+#### Con todas las opciones:
+```bash
+python extract_playlist_advanced.py "URL_PLAYLIST" \
+  --expected 119 \
+  --output mi_playlist \
+  --pause 3 \
+  --no-headless
+```
+
+#### Argumentos disponibles:
+- `url`: URL de la playlist (opcional, usa playlist por defecto si no se proporciona)
+- `-e, --expected`: Número esperado de videos (para validación)
+- `-o, --output`: Nombre base para archivos de salida (default: "playlist")
+- `--pause`: Tiempo de pausa entre scrolls en segundos (default: 2)
+- `--no-headless`: Mostrar ventana del navegador (útil para debugging)
+
+#### Ejemplos:
+
+**Extraer playlist con validación:**
+```bash
+python extract_playlist_advanced.py "https://youtube.com/playlist?list=ABC123" --expected 119
+```
+
+**Ver el proceso en tiempo real:**
+```bash
+python extract_playlist_advanced.py --no-headless
+```
+
+**Playlist muy grande (más lenta):**
+```bash
+python extract_playlist_advanced.py "URL" --pause 3 --expected 500
 ```
 
 ## 📁 Archivos generados
