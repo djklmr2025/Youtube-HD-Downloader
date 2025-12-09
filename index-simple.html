@@ -2,511 +2,602 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Playlist URL Extractor</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Playlist URL Extractor Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-    .container {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 24px;
-      padding: 40px;
-      max-width: 800px;
-      width: 100%;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      animation: slideUp 0.5s ease-out;
-    }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.5s ease-out;
+        }
 
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    h1 {
-      color: #1a1a2e;
-      font-size: 32px;
-      font-weight: 800;
-      margin-bottom: 10px;
-      text-align: center;
-    }
+        h1 {
+            color: #1a1a2e;
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-align: center;
+        }
 
-    .subtitle {
-      color: #667eea;
-      text-align: center;
-      margin-bottom: 30px;
-      font-size: 16px;
-    }
+        .subtitle {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
 
-    .input-group {
-      margin-bottom: 20px;
-    }
+        .input-group {
+            margin-bottom: 20px;
+        }
 
-    label {
-      display: block;
-      color: #1a1a2e;
-      font-weight: 600;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
+        label {
+            display: block;
+            color: #1a1a2e;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
 
-    input[type="text"] {
-      width: 100%;
-      padding: 14px 18px;
-      border: 2px solid #e0e0e0;
-      border-radius: 12px;
-      font-size: 15px;
-      transition: all 0.3s ease;
-      font-family: 'Inter', sans-serif;
-    }
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
 
-    input[type="text"]:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-    }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
 
-    .btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      padding: 14px 32px;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      width: 100%;
-      margin-top: 10px;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-    }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
 
-    .btn:active {
-      transform: translateY(0);
-    }
+        .btn:active {
+            transform: translateY(0);
+        }
 
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-    .results {
-      margin-top: 30px;
-      display: none;
-    }
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
 
-    .results.show {
-      display: block;
-      animation: fadeIn 0.5s ease-out;
-    }
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
 
-      to {
-        opacity: 1;
-      }
-    }
+            to {
+                opacity: 1;
+            }
+        }
 
-    .results-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
 
-    .results-title {
-      color: #1a1a2e;
-      font-weight: 700;
-      font-size: 18px;
-    }
+        .results-title {
+            color: #1a1a2e;
+            font-weight: 700;
+            font-size: 18px;
+        }
 
-    .count {
-      background: #667eea;
-      color: white;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
-    }
+        .count {
+            background: #667eea;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
 
-    textarea {
-      width: 100%;
-      min-height: 300px;
-      padding: 16px;
-      border: 2px solid #e0e0e0;
-      border-radius: 12px;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      resize: vertical;
-      margin-bottom: 15px;
-    }
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            margin-bottom: 15px;
+        }
 
-    textarea:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-    }
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
 
-    .action-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
 
-    .btn-secondary {
-      background: white;
-      color: #667eea;
-      border: 2px solid #667eea;
-      box-shadow: none;
-    }
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            box-shadow: none;
+        }
 
-    .btn-secondary:hover {
-      background: #667eea;
-      color: white;
-    }
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
 
-    .loading {
-      display: none;
-      text-align: center;
-      margin: 20px 0;
-    }
+        .btn-jd {
+            background: white;
+            color: #ff9800;
+            border: 2px solid #ff9800;
+            box-shadow: none;
+        }
 
-    .loading.show {
-      display: block;
-    }
+        .btn-jd:hover {
+            background: #ff9800;
+            color: white;
+        }
 
-    .spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #667eea;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 10px;
-    }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
 
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
+        .loading.show {
+            display: block;
+        }
 
-      100% {
-        transform: rotate(360deg);
-      }
-    }
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
 
-    .error {
-      background: #fee;
-      border: 2px solid #fcc;
-      color: #c33;
-      padding: 14px;
-      border-radius: 12px;
-      margin-top: 15px;
-      display: none;
-    }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
 
-    .error.show {
-      display: block;
-      animation: shake 0.5s ease-out;
-    }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
-    @keyframes shake {
+        .error {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c33;
+            padding: 14px;
+            border-radius: 12px;
+            margin-top: 15px;
+            display: none;
+        }
 
-      0%,
-      100% {
-        transform: translateX(0);
-      }
+        .error.show {
+            display: block;
+            animation: shake 0.5s ease-out;
+        }
 
-      25% {
-        transform: translateX(-10px);
-      }
+        @keyframes shake {
 
-      75% {
-        transform: translateX(10px);
-      }
-    }
+            0%,
+            100% {
+                transform: translateX(0);
+            }
 
-    .info {
-      background: #e3f2fd;
-      border: 2px solid #90caf9;
-      color: #1565c0;
-      padding: 14px;
-      border-radius: 12px;
-      margin-top: 15px;
-      font-size: 14px;
-    }
+            25% {
+                transform: translateX(-10px);
+            }
 
-    .info strong {
-      display: block;
-      margin-bottom: 5px;
-    }
+            75% {
+                transform: translateX(10px);
+            }
+        }
 
-    .debug {
-      background: #fff3cd;
-      border: 2px solid #ffc107;
-      color: #856404;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 10px;
-      font-size: 12px;
-      display: none;
-    }
+        .info {
+            background: #e3f2fd;
+            border: 2px solid #90caf9;
+            color: #1565c0;
+            padding: 14px;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
 
-    .debug.show {
-      display: block;
-    }
-  </style>
+        .info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .debug {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            color: #856404;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 12px;
+            display: none;
+        }
+
+        .debug.show {
+            display: block;
+        }
+
+        .warning {
+            background: #fff3e0;
+            border: 2px solid #ffb74d;
+            color: #e65100;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .warning.show {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>🎵 YouTube Playlist Extractor</h1>
-    <p class="subtitle">Extrae URLs de videos de cualquier playlist de YouTube</p>
+    <div class="container">
+        <h1>🎵 YouTube Playlist Extractor Pro</h1>
+        <p class="subtitle">Extrae TODOS los URLs de videos de cualquier playlist de YouTube</p>
 
-    <div class="input-group">
-      <label for="playlistUrl">URL de la Playlist de YouTube:</label>
-      <input type="text" id="playlistUrl" placeholder="https://www.youtube.com/playlist?list=...">
+        <div class="input-group">
+            <label for="playlistUrl">URL de la Playlist de YouTube:</label>
+            <input type="text" id="playlistUrl" placeholder="https://www.youtube.com/playlist?list=...">
+        </div>
+
+        <button class="btn" id="extractBtn">Extraer URLs</button>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Extrayendo URLs de la playlist completa...</p>
+        </div>
+
+        <div class="error" id="error"></div>
+        <div class="debug" id="debug"></div>
+        <div class="warning" id="warning"></div>
+
+        <div class="info">
+            <strong>📌 Cómo usar:</strong>
+            1. Copia el URL de cualquier playlist pública de YouTube<br>
+            2. Pégalo en el campo de arriba<br>
+            3. Haz clic en "Extraer URLs"<br>
+            4. Copia, descarga como .txt o crea archivo .DLC para JDownloader
+        </div>
+
+        <div class="results" id="results">
+            <div class="results-header">
+                <span class="results-title">URLs Extraídas:</span>
+                <span class="count" id="count">0 videos</span>
+            </div>
+            <textarea id="urlList" readonly></textarea>
+            <div class="action-buttons">
+                <button class="btn btn-secondary" id="copyBtn">📋 Copiar</button>
+                <button class="btn" id="downloadBtn">💾 .TXT</button>
+                <button class="btn btn-jd" id="dlcBtn">📦 .DLC</button>
+            </div>
+        </div>
     </div>
 
-    <button class="btn" id="extractBtn">Extraer URLs</button>
+    <script>
+        const playlistInput = document.getElementById('playlistUrl');
+        const extractBtn = document.getElementById('extractBtn');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const debug = document.getElementById('debug');
+        const warning = document.getElementById('warning');
+        const results = document.getElementById('results');
+        const urlList = document.getElementById('urlList');
+        const count = document.getElementById('count');
+        const copyBtn = document.getElementById('copyBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const dlcBtn = document.getElementById('dlcBtn');
 
-    <div class="loading" id="loading">
-      <div class="spinner"></div>
-      <p>Extrayendo URLs...</p>
-    </div>
+        let currentUrls = [];
 
-    <div class="error" id="error"></div>
-    <div class="debug" id="debug"></div>
-
-    <div class="info">
-      <strong>📌 Cómo usar:</strong>
-      1. Copia el URL de cualquier playlist pública de YouTube<br>
-      2. Pégalo en el campo de arriba<br>
-      3. Haz clic en "Extraer URLs"<br>
-      4. Copia o descarga la lista de enlaces
-    </div>
-
-    <div class="results" id="results">
-      <div class="results-header">
-        <span class="results-title">URLs Extraídas:</span>
-        <span class="count" id="count">0 videos</span>
-      </div>
-      <textarea id="urlList" readonly></textarea>
-      <div class="action-buttons">
-        <button class="btn btn-secondary" id="copyBtn">📋 Copiar Todo</button>
-        <button class="btn" id="downloadBtn">💾 Descargar .txt</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const playlistInput = document.getElementById('playlistUrl');
-    const extractBtn = document.getElementById('extractBtn');
-    const loading = document.getElementById('loading');
-    const error = document.getElementById('error');
-    const debug = document.getElementById('debug');
-    const results = document.getElementById('results');
-    const urlList = document.getElementById('urlList');
-    const count = document.getElementById('count');
-    const copyBtn = document.getElementById('copyBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-
-    function showError(message) {
-      error.textContent = message;
-      error.classList.add('show');
-      setTimeout(() => error.classList.remove('show'), 8000);
-    }
-
-    function showDebug(message) {
-      debug.textContent = message;
-      debug.classList.add('show');
-    }
-
-    function extractPlaylistId(url) {
-      const regex = /[?&]list=([^&]+)/;
-      const match = url.match(regex);
-      return match ? match[1] : null;
-    }
-
-    async function fetchPlaylistData(playlistId) {
-      const proxies = [
-        { name: 'AllOrigins', url: (id) => `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://www.youtube.com/playlist?list=${id}`)}` },
-        { name: 'CorsProxy', url: (id) => `https://corsproxy.io/?${encodeURIComponent(`https://www.youtube.com/playlist?list=${id}`)}` },
-        { name: 'ThingProxy', url: (id) => `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(`https://www.youtube.com/playlist?list=${id}`)}` }
-      ];
-
-      let html = '';
-      let usedProxy = '';
-
-      // Intentar con cada proxy
-      for (const proxy of proxies) {
-        try {
-          showDebug(`Intentando con ${proxy.name}...`);
-          const response = await fetch(proxy.url(playlistId));
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          html = await response.text();
-          usedProxy = proxy.name;
-          showDebug(`✓ Éxito con ${proxy.name}`);
-          break;
-        } catch (err) {
-          showDebug(`✗ Falló ${proxy.name}: ${err.message}`);
-          continue;
+        function showError(message) {
+            error.textContent = message;
+            error.classList.add('show');
+            setTimeout(() => error.classList.remove('show'), 8000);
         }
-      }
 
-      if (!html) {
-        throw new Error('No se pudo conectar con YouTube. Todos los proxies fallaron.');
-      }
+        function showDebug(message) {
+            debug.textContent = message;
+            debug.classList.add('show');
+        }
 
-      // Extraer IDs de video con múltiples patrones
-      const videoIds = new Set();
-      
-      // Patrón 1: "videoId":"ID"
-      const regex1 = /"videoId":"([a-zA-Z0-9_-]{11})"/g;
-      let match;
-      while ((match = regex1.exec(html)) !== null) {
-        videoIds.add(match[1]);
-      }
+        function showWarning(message) {
+            warning.textContent = message;
+            warning.classList.add('show');
+        }
 
-      // Patrón 2: watch?v=ID
-      const regex2 = /watch\?v=([a-zA-Z0-9_-]{11})/g;
-      while ((match = regex2.exec(html)) !== null) {
-        videoIds.add(match[1]);
-      }
+        function extractPlaylistId(url) {
+            const regex = /[?&]list=([^&]+)/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
 
-      // Patrón 3: /vi/ID/ (thumbnails)
-      const regex3 = /\/vi\/([a-zA-Z0-9_-]{11})\//g;
-      while ((match = regex3.exec(html)) !== null) {
-        videoIds.add(match[1]);
-      }
+        // Función para crear archivo DLC
+        function createDLC(urls) {
+            // Formato DLC básico (base64 del contenido)
+            const dlcContent = urls.join('\r\n');
+            const encoded = btoa(dlcContent);
 
-      // Patrón 4: embed/ID
-      const regex4 = /embed\/([a-zA-Z0-9_-]{11})/g;
-      while ((match = regex4.exec(html)) !== null) {
-        videoIds.add(match[1]);
-      }
+            // Estructura DLC
+            const dlcData = `<dlc>
+<header>
+<generator>YouTube Playlist Extractor</generator>
+<tribute>Created with love</tribute>
+</header>
+<content>
+<package name="YouTube Playlist" passwords="" comment="">
+${urls.map(url => `<file><url>${btoa(url)}</url></file>`).join('\n')}
+</package>
+</content>
+</dlc>`;
 
-      const uniqueIds = Array.from(videoIds);
-      
-      showDebug(`Encontrados ${uniqueIds.length} videos usando ${usedProxy}`);
+            return dlcData;
+        }
 
-      if (uniqueIds.length === 0) {
-        throw new Error('No se encontraron videos. Verifica que:\n1. La playlist sea pública\n2. La playlist contenga videos\n3. El URL sea correcto');
-      }
+        async function fetchPlaylistData(playlistId) {
+            const proxies = [
+                { name: 'CorsProxy', url: (id) => `https://corsproxy.io/?${encodeURIComponent(`https://www.youtube.com/playlist?list=${id}`)}` },
+                { name: 'AllOrigins', url: (id) => `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://www.youtube.com/playlist?list=${id}`)}` },
+                { name: 'ThingProxy', url: (id) => `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(`https://www.youtube.com/playlist?list=${id}`)}` }
+            ];
 
-      return uniqueIds;
-    }
+            let html = '';
+            let usedProxy = '';
 
-    extractBtn.addEventListener('click', async () => {
-      const url = playlistInput.value.trim();
+            // Intentar con cada proxy
+            for (const proxy of proxies) {
+                try {
+                    showDebug(`Intentando con ${proxy.name}...`);
+                    const response = await fetch(proxy.url(playlistId));
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    html = await response.text();
+                    usedProxy = proxy.name;
+                    showDebug(`✓ Éxito con ${proxy.name}`);
+                    break;
+                } catch (err) {
+                    showDebug(`✗ Falló ${proxy.name}: ${err.message}`);
+                    continue;
+                }
+            }
 
-      if (!url) {
-        showError('Por favor ingresa un URL de playlist');
-        return;
-      }
+            if (!html) {
+                throw new Error('No se pudo conectar con YouTube. Todos los proxies fallaron.');
+            }
 
-      const playlistId = extractPlaylistId(url);
+            // Extraer IDs de video con múltiples patrones
+            const videoIds = new Set();
 
-      if (!playlistId) {
-        showError('URL inválido. Asegúrate de que sea un enlace de playlist de YouTube');
-        return;
-      }
+            // Patrón 1: "videoId":"ID"
+            const regex1 = /"videoId":"([a-zA-Z0-9_-]{11})"/g;
+            let match;
+            while ((match = regex1.exec(html)) !== null) {
+                videoIds.add(match[1]);
+            }
 
-      // Mostrar loading
-      loading.classList.add('show');
-      results.classList.remove('show');
-      error.classList.remove('show');
-      debug.classList.remove('show');
-      extractBtn.disabled = true;
+            // Patrón 2: watch?v=ID
+            const regex2 = /watch\?v=([a-zA-Z0-9_-]{11})/g;
+            while ((match = regex2.exec(html)) !== null) {
+                videoIds.add(match[1]);
+            }
 
-      try {
-        const videoIds = await fetchPlaylistData(playlistId);
+            // Patrón 3: /vi/ID/ (thumbnails)
+            const regex3 = /\/vi\/([a-zA-Z0-9_-]{11})\//g;
+            while ((match = regex3.exec(html)) !== null) {
+                videoIds.add(match[1]);
+            }
 
-        // Generar URLs
-        const urls = videoIds.map(id => `https://www.youtube.com/watch?v=${id}`);
+            // Patrón 4: embed/ID
+            const regex4 = /embed\/([a-zA-Z0-9_-]{11})/g;
+            while ((match = regex4.exec(html)) !== null) {
+                videoIds.add(match[1]);
+            }
 
-        // Mostrar resultados
-        urlList.value = urls.join('\n');
-        count.textContent = `${urls.length} video${urls.length !== 1 ? 's' : ''}`;
-        results.classList.add('show');
+            const uniqueIds = Array.from(videoIds);
 
-      } catch (err) {
-        showError(err.message);
-      } finally {
-        loading.classList.remove('show');
-        extractBtn.disabled = false;
-      }
-    });
+            showDebug(`Encontrados ${uniqueIds.length} videos usando ${usedProxy}`);
 
-    copyBtn.addEventListener('click', () => {
-      urlList.select();
-      document.execCommand('copy');
+            if (uniqueIds.length === 0) {
+                throw new Error('No se encontraron videos. Verifica que:\n1. La playlist sea pública\n2. La playlist contenga videos\n3. El URL sea correcto');
+            }
 
-      const originalText = copyBtn.textContent;
-      copyBtn.textContent = '✅ Copiado!';
-      setTimeout(() => {
-        copyBtn.textContent = originalText;
-      }, 2000);
-    });
+            // Advertencia si parece que hay más videos
+            if (uniqueIds.length >= 100) {
+                showWarning(`⚠️ Se encontraron ${uniqueIds.length} videos. Si la playlist tiene más de 100 videos, es posible que no se hayan obtenido todos debido a las limitaciones de carga de YouTube. Para playlists muy grandes, considera usar la API oficial de YouTube.`);
+            }
 
-    downloadBtn.addEventListener('click', () => {
-      const text = urlList.value;
-      const blob = new Blob([text], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'youtube-playlist-urls.txt';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+            return uniqueIds;
+        }
 
-      const originalText = downloadBtn.textContent;
-      downloadBtn.textContent = '✅ Descargado!';
-      setTimeout(() => {
-        downloadBtn.textContent = originalText;
-      }, 2000);
-    });
+        extractBtn.addEventListener('click', async () => {
+            const url = playlistInput.value.trim();
 
-    // Permitir Enter para extraer
-    playlistInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        extractBtn.click();
-      }
-    });
-  </script>
+            if (!url) {
+                showError('Por favor ingresa un URL de playlist');
+                return;
+            }
+
+            const playlistId = extractPlaylistId(url);
+
+            if (!playlistId) {
+                showError('URL inválido. Asegúrate de que sea un enlace de playlist de YouTube');
+                return;
+            }
+
+            // Mostrar loading
+            loading.classList.add('show');
+            results.classList.remove('show');
+            error.classList.remove('show');
+            debug.classList.remove('show');
+            warning.classList.remove('show');
+            extractBtn.disabled = true;
+
+            try {
+                const videoIds = await fetchPlaylistData(playlistId);
+
+                // Generar URLs
+                const urls = videoIds.map(id => `https://www.youtube.com/watch?v=${id}`);
+                currentUrls = urls;
+
+                // Mostrar resultados
+                urlList.value = urls.join('\n');
+                count.textContent = `${urls.length} video${urls.length !== 1 ? 's' : ''}`;
+                results.classList.add('show');
+
+            } catch (err) {
+                showError(err.message);
+            } finally {
+                loading.classList.remove('show');
+                extractBtn.disabled = false;
+            }
+        });
+
+        copyBtn.addEventListener('click', () => {
+            urlList.select();
+            document.execCommand('copy');
+
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = '✅ Copiado!';
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+            }, 2000);
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const text = urlList.value;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'youtube-playlist-urls.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            const originalText = downloadBtn.textContent;
+            downloadBtn.textContent = '✅ Descargado!';
+            setTimeout(() => {
+                downloadBtn.textContent = originalText;
+            }, 2000);
+        });
+
+        dlcBtn.addEventListener('click', () => {
+            if (currentUrls.length === 0) {
+                showError('No hay URLs para exportar');
+                return;
+            }
+
+            const dlcContent = createDLC(currentUrls);
+            const blob = new Blob([dlcContent], { type: 'application/x-dlc' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'youtube-playlist.dlc';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            const originalText = dlcBtn.textContent;
+            dlcBtn.textContent = '✅ Creado!';
+            setTimeout(() => {
+                dlcBtn.textContent = originalText;
+            }, 2000);
+        });
+
+        // Permitir Enter para extraer
+        playlistInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                extractBtn.click();
+            }
+        });
+    </script>
 </body>
 
 </html>
