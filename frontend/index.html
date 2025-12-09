@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Playlist Extractor - ARKAIOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #1a1a2e;
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #667eea;
+            font-size: 16px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #1a1a2e;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .results-title {
+            color: #1a1a2e;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .count {
+            background: #4caf50;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            margin-bottom: 15px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            box-shadow: none;
+            padding: 12px 20px;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-jd {
+            background: white;
+            color: #ff9800;
+            border: 2px solid #ff9800;
+            box-shadow: none;
+            padding: 12px 20px;
+        }
+
+        .btn-jd:hover:not(:disabled) {
+            background: #ff9800;
+            color: white;
+        }
+
+        .alert {
+            padding: 14px;
+            border-radius: 12px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+            animation: shake 0.5s ease-out;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        .alert-error {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c33;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            color: #2e7d32;
+        }
+
+        .info {
+            background: #e3f2fd;
+            border: 2px solid #90caf9;
+            color: #1565c0;
+            padding: 14px;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 YouTube Playlist Extractor</h1>
+            <p class="subtitle">Extrae el 100% de los videos de cualquier playlist</p>
+            <span class="badge">Powered by ARKAIOS</span>
+        </div>
+
+        <div class="input-group">
+            <label for="playlistUrl">URL de la Playlist de YouTube:</label>
+            <input type="text" id="playlistUrl" placeholder="https://www.youtube.com/playlist?list=..."
+                value="https://www.youtube.com/playlist?list=PLCYBQp7vbvBHqtaozeouLD9ek-GuiMcjo">
+        </div>
+
+        <button class="btn" id="extractBtn">🚀 Extraer Todos los Videos</button>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p class="loading-text" id="loadingText">Extrayendo videos...</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="alert alert-error" id="error"></div>
+        <div class="alert alert-success" id="success"></div>
+
+        <div class="info">
+            <strong>✨ Características:</strong>
+            • Extrae el 100% de los videos (sin límite de 100)<br>
+            • No requiere API Key<br>
+            • Funciona con playlists de cualquier tamaño<br>
+            • Exporta a TXT y DLC (JDownloader)<br>
+            • 100% gratis y de código abierto
+        </div>
+
+        <div class="results" id="results">
+            <div class="results-header">
+                <span class="results-title">✅ URLs Extraídas:</span>
+                <span class="count" id="count">0 videos</span>
+            </div>
+            <textarea id="urlList" readonly></textarea>
+            <div class="action-buttons">
+                <button class="btn btn-secondary" id="copyBtn">📋 Copiar</button>
+                <button class="btn btn-secondary" id="downloadBtn">💾 .TXT</button>
+                <button class="btn btn-jd" id="dlcBtn">📦 .DLC</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            Creado con ❤️ por <a href="https://github.com/djklmr2025" target="_blank">ARKAIOS</a> •
+            <a href="https://github.com/djklmr2025/Youtube-HD-Downloader" target="_blank">Ver en GitHub</a>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de la API
+        const API_URL = 'https://youtube-playlist-extractor.onrender.com'; // Cambiar después del deploy
+
+        const playlistInput = document.getElementById('playlistUrl');
+        const extractBtn = document.getElementById('extractBtn');
+        const loading = document.getElementById('loading');
+        const loadingText = document.getElementById('loadingText');
+        const progressFill = document.getElementById('progressFill');
+        const error = document.getElementById('error');
+        const success = document.getElementById('success');
+        const results = document.getElementById('results');
+        const urlList = document.getElementById('urlList');
+        const count = document.getElementById('count');
+        const copyBtn = document.getElementById('copyBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const dlcBtn = document.getElementById('dlcBtn');
+
+        let currentUrls = [];
+
+        function showError(message) {
+            error.textContent = message;
+            error.classList.add('show');
+            success.classList.remove('show');
+            setTimeout(() => error.classList.remove('show'), 8000);
+        }
+
+        function showSuccess(message) {
+            success.textContent = message;
+            success.classList.add('show');
+            error.classList.remove('show');
+            setTimeout(() => success.classList.remove('show'), 5000);
+        }
+
+        function createDLC(urls) {
+            const dlcData = `<dlc>
+<header>
+<generator>YouTube Playlist Extractor - ARKAIOS</generator>
+</header>
+<content>
+<package name="YouTube Playlist" passwords="" comment="">
+${urls.map(url => `<file><url>${btoa(url)}</url></file>`).join('\n')}
+</package>
+</content>
+</dlc>`;
+            return dlcData;
+        }
+
+        async function extractPlaylist() {
+            const url = playlistInput.value.trim();
+
+            if (!url) {
+                showError('Por favor ingresa un URL de playlist');
+                return;
+            }
+
+            if (!url.includes('youtube.com/playlist') || !url.includes('list=')) {
+                showError('URL inválida. Debe ser un enlace de playlist de YouTube');
+                return;
+            }
+
+            // Mostrar loading
+            loading.classList.add('show');
+            results.classList.remove('show');
+            error.classList.remove('show');
+            success.classList.remove('show');
+            extractBtn.disabled = true;
+            progressFill.style.width = '30%';
+
+            try {
+                loadingText.textContent = 'Conectando con el servidor...';
+
+                const response = await fetch(`${API_URL}/extract`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url })
+                });
+
+                progressFill.style.width = '60%';
+                loadingText.textContent = 'Procesando playlist...';
+
+                const data = await response.json();
+
+                progressFill.style.width = '100%';
+
+                if (data.success) {
+                    currentUrls = data.videos.map(v => v.url);
+
+                    urlList.value = currentUrls.join('\n');
+                    count.textContent = `${data.total_videos} video${data.total_videos !== 1 ? 's' : ''}`;
+                    results.classList.add('show');
+
+                    showSuccess(`✅ ¡Éxito! Se extrajeron ${data.total_videos} videos completos`);
+                } else {
+                    showError(`❌ Error: ${data.error}`);
+                }
+
+            } catch (err) {
+                showError(`❌ Error de conexión: ${err.message}. Verifica que el servidor esté activo.`);
+            } finally {
+                loading.classList.remove('show');
+                progressFill.style.width = '0%';
+                loadingText.textContent = 'Extrayendo videos...';
+                extractBtn.disabled = false;
+            }
+        }
+
+        extractBtn.addEventListener('click', extractPlaylist);
+
+        copyBtn.addEventListener('click', () => {
+            urlList.select();
+            document.execCommand('copy');
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = '✅ Copiado!';
+            setTimeout(() => copyBtn.textContent = originalText, 2000);
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const text = urlList.value;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'youtube-playlist-urls.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            const originalText = downloadBtn.textContent;
+            downloadBtn.textContent = '✅ Descargado!';
+            setTimeout(() => downloadBtn.textContent = originalText, 2000);
+        });
+
+        dlcBtn.addEventListener('click', () => {
+            if (currentUrls.length === 0) {
+                showError('No hay URLs para exportar');
+                return;
+            }
+            const dlcContent = createDLC(currentUrls);
+            const blob = new Blob([dlcContent], { type: 'application/x-dlc' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'youtube-playlist.dlc';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            const originalText = dlcBtn.textContent;
+            dlcBtn.textContent = '✅ Creado!';
+            setTimeout(() => dlcBtn.textContent = originalText, 2000);
+        });
+
+        playlistInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                extractBtn.click();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -15,16 +15,24 @@ Extrae **TODOS** los videos de cualquier playlist de YouTube sin límites y sin 
 
 ## 📦 Versiones Disponibles
 
-### 1. **Versión Web (`index.html`)** - Recomendado para uso rápido
+### 1. **Versión Web con Backend** ⭐ **RECOMENDADO PARA PRODUCCIÓN**
+- 🌐 100% en línea (GitHub Pages + Render)
+- 🚀 Extrae el 100% de videos sin límites
+- 🔓 Sin API Key necesaria para usuarios
+- ⚡ Rápido y confiable
+- 📁 Archivos: `frontend/index.html` + `backend/app.py`
+- 📖 [Ver guía de deployment](DEPLOYMENT.md)
+
+### 2. **Versión Web Simple (`index.html`)** - Para uso local
 - 3 métodos de extracción
 - Interfaz gráfica intuitiva
-- No requiere instalación
+- Requiere API Key para 100% de videos
 
-### 2. **Script Básico (`extract_playlist.py`)** - Simple y directo
+### 3. **Script Básico (`extract_playlist.py`)** - Simple y directo
 - Extracción automática
 - Genera 4 formatos de salida
 
-### 3. **Script Avanzado (`extract_playlist_advanced.py`)** ⭐ **RECOMENDADO**
+### 4. **Script Avanzado (`extract_playlist_advanced.py`)** - Más robusto
 - Logging completo con archivos de log
 - Validación de duplicados
 - Detección inteligente de scroll
