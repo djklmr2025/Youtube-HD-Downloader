@@ -340,10 +340,10 @@
 
     async function fetchPlaylistData(playlistId) {
       try {
-        // Usamos la API pública de YouTube sin autenticación
-        const response = await fetch(
-          `https://www.youtube.com/playlist?list=${playlistId}`
-        );
+        // Usar proxy CORS para evitar restricciones
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const targetUrl = encodeURIComponent(`https://www.youtube.com/playlist?list=${playlistId}`);
+        const response = await fetch(proxyUrl + targetUrl);
         const html = await response.text();
 
         // Extraer datos del HTML
