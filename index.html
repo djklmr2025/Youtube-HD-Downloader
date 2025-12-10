@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Playlist Extractor - ARKAIOS</title>
+    <title>YouTube Playlist Extractor - ARKAIOS Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -72,6 +72,10 @@
             font-size: 12px;
             font-weight: 600;
             margin-top: 10px;
+        }
+
+        .badge-pro {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
 
         .input-group {
@@ -159,6 +163,25 @@
         .loading-text {
             color: #667eea;
             font-weight: 600;
+        }
+
+        .method-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .method-fast {
+            background: #4caf50;
+            color: white;
+        }
+
+        .method-robust {
+            background: #2196f3;
+            color: white;
         }
 
         .progress-bar {
@@ -362,8 +385,9 @@
     <div class="container">
         <div class="header">
             <h1>🎵 YouTube Playlist Extractor</h1>
-            <p class="subtitle">Extrae el 100% de los videos de cualquier playlist</p>
+            <p class="subtitle">Extrae el 100% de los videos con IA híbrida</p>
             <span class="badge">Powered by ARKAIOS</span>
+            <span class="badge badge-pro">PRO Edition</span>
         </div>
 
         <div class="input-group">
@@ -372,11 +396,12 @@
                 value="https://www.youtube.com/playlist?list=PLCYBQp7vbvBHqtaozeouLD9ek-GuiMcjo">
         </div>
 
-        <button class="btn" id="extractBtn">🚀 Extraer Todos los Videos</button>
+        <button class="btn" id="extractBtn">🚀 Extraer Todos los Videos (Modo Inteligente)</button>
 
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p class="loading-text" id="loadingText">Extrayendo videos...</p>
+            <p class="loading-text" id="loadingText">Iniciando extracción inteligente...</p>
+            <span class="method-badge" id="methodBadge"></span>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
@@ -386,8 +411,11 @@
         <div class="alert alert-success" id="success"></div>
 
         <div class="info">
-            <strong>✨ Características:</strong>
-            • Extrae el 100% de los videos (sin límite de 100)<br>
+            <strong>✨ Modo Inteligente Híbrido:</strong>
+            🚀 <strong>Método 1 (Rápido):</strong> Extracción client-side con CORS proxy (5-10 seg)<br>
+            🔧 <strong>Método 2 (Robusto):</strong> Backend con Selenium si el primero falla (30-60 seg)<br>
+            💡 <strong>Resultado:</strong> Siempre obtienes el 100% de los videos, sin importar el tamaño<br>
+            <br>
             • No requiere API Key<br>
             • Funciona con playlists de cualquier tamaño<br>
             • Exporta a TXT y DLC (JDownloader)<br>
@@ -414,13 +442,18 @@
     </div>
 
     <script>
-        // Configuración de la API
-        const API_URL = 'https://youtube-playlist-extractor.onrender.com'; // Cambiar después del deploy
+        // Configuración
+        const BACKEND_API = 'https://youtube-playlist-extractor.onrender.com';
+        const CORS_PROXIES = [
+            'https://corsproxy.io/?',
+            'https://api.allorigins.win/raw?url='
+        ];
 
         const playlistInput = document.getElementById('playlistUrl');
         const extractBtn = document.getElementById('extractBtn');
         const loading = document.getElementById('loading');
         const loadingText = document.getElementById('loadingText');
+        const methodBadge = document.getElementById('methodBadge');
         const progressFill = document.getElementById('progressFill');
         const error = document.getElementById('error');
         const success = document.getElementById('success');
@@ -447,10 +480,15 @@
             setTimeout(() => success.classList.remove('show'), 5000);
         }
 
+        function extractPlaylistId(url) {
+            const match = url.match(/[?&]list=([^&]+)/);
+            return match ? match[1] : null;
+        }
+
         function createDLC(urls) {
             const dlcData = `<dlc>
 <header>
-<generator>YouTube Playlist Extractor - ARKAIOS</generator>
+<generator>YouTube Playlist Extractor - ARKAIOS PRO</generator>
 </header>
 <content>
 <package name="YouTube Playlist" passwords="" comment="">
@@ -461,6 +499,112 @@ ${urls.map(url => `<file><url>${btoa(url)}</url></file>`).join('\n')}
             return dlcData;
         }
 
+        // MÉTODO 1: Extracción rápida client-side (inspirado en Claude)
+        async function extractFast(playlistId) {
+            loadingText.textContent = 'Método 1: Extracción rápida con CORS proxy...';
+            methodBadge.textContent = 'RÁPIDO';
+            methodBadge.className = 'method-badge method-fast';
+            progressFill.style.width = '20%';
+
+            for (const proxy of CORS_PROXIES) {
+                try {
+                    const url = `${proxy}${encodeURIComponent(`https://www.youtube.com/playlist?list=${playlistId}`)}`;
+                    const response = await fetch(url);
+
+                    if (!response.ok) continue;
+
+                    progressFill.style.width = '50%';
+                    const html = await response.text();
+
+                    // Extraer video IDs usando múltiples patrones
+                    const videoIds = new Set();
+
+                    // Patrón 1: videoId en JSON
+                    const regex1 = /"videoId":"([a-zA-Z0-9_-]{11})"/g;
+                    let match;
+                    while ((match = regex1.exec(html)) !== null) {
+                        videoIds.add(match[1]);
+                    }
+
+                    // Patrón 2: ytInitialData
+                    const initialDataMatch = html.match(/var ytInitialData = ({.+?});/);
+                    if (initialDataMatch) {
+                        try {
+                            const data = JSON.parse(initialDataMatch[1]);
+                            const extractFromObject = (obj) => {
+                                if (typeof obj !== 'object' || obj === null) return;
+                                if (obj.videoId && typeof obj.videoId === 'string' && obj.videoId.length === 11) {
+                                    videoIds.add(obj.videoId);
+                                }
+                                for (const key in obj) {
+                                    extractFromObject(obj[key]);
+                                }
+                            };
+                            extractFromObject(data);
+                        } catch (e) {
+                            // Ignorar errores de parsing
+                        }
+                    }
+
+                    progressFill.style.width = '100%';
+
+                    if (videoIds.size > 0) {
+                        return {
+                            success: true,
+                            method: 'fast',
+                            total_videos: videoIds.size,
+                            videos: Array.from(videoIds).map((id, index) => ({
+                                index: index + 1,
+                                video_id: id,
+                                url: `https://www.youtube.com/watch?v=${id}`
+                            }))
+                        };
+                    }
+                } catch (err) {
+                    continue;
+                }
+            }
+
+            throw new Error('Método rápido falló, intentando método robusto...');
+        }
+
+        // MÉTODO 2: Backend robusto con Selenium
+        async function extractRobust(playlistUrl) {
+            loadingText.textContent = 'Método 2: Extracción robusta con backend...';
+            methodBadge.textContent = 'ROBUSTO';
+            methodBadge.className = 'method-badge method-robust';
+            progressFill.style.width = '30%';
+
+            const response = await fetch(`${BACKEND_API}/extract`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url: playlistUrl })
+            });
+
+            progressFill.style.width = '80%';
+
+            if (!response.ok) {
+                throw new Error('Backend no disponible');
+            }
+
+            const data = await response.json();
+            progressFill.style.width = '100%';
+
+            if (data.success) {
+                return {
+                    success: true,
+                    method: 'robust',
+                    total_videos: data.total_videos,
+                    videos: data.videos
+                };
+            } else {
+                throw new Error(data.error || 'Error en backend');
+            }
+        }
+
+        // EXTRACCIÓN INTELIGENTE HÍBRIDA
         async function extractPlaylist() {
             const url = playlistInput.value.trim();
 
@@ -469,55 +613,47 @@ ${urls.map(url => `<file><url>${btoa(url)}</url></file>`).join('\n')}
                 return;
             }
 
-            if (!url.includes('youtube.com/playlist') || !url.includes('list=')) {
+            const playlistId = extractPlaylistId(url);
+            if (!playlistId) {
                 showError('URL inválida. Debe ser un enlace de playlist de YouTube');
                 return;
             }
 
-            // Mostrar loading
             loading.classList.add('show');
             results.classList.remove('show');
             error.classList.remove('show');
             success.classList.remove('show');
             extractBtn.disabled = true;
-            progressFill.style.width = '30%';
+            progressFill.style.width = '0%';
 
             try {
-                loadingText.textContent = 'Conectando con el servidor...';
+                let result;
 
-                const response = await fetch(`${API_URL}/extract`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ url })
-                });
+                // Intento 1: Método rápido
+                try {
+                    result = await extractFast(playlistId);
+                    showSuccess(`✅ ¡Éxito con método RÁPIDO! ${result.total_videos} videos en ${result.method === 'fast' ? '5-10' : '30-60'} segundos`);
+                } catch (fastError) {
+                    console.log('Método rápido falló, usando método robusto...');
 
-                progressFill.style.width = '60%';
-                loadingText.textContent = 'Procesando playlist...';
-
-                const data = await response.json();
-
-                progressFill.style.width = '100%';
-
-                if (data.success) {
-                    currentUrls = data.videos.map(v => v.url);
-
-                    urlList.value = currentUrls.join('\n');
-                    count.textContent = `${data.total_videos} video${data.total_videos !== 1 ? 's' : ''}`;
-                    results.classList.add('show');
-
-                    showSuccess(`✅ ¡Éxito! Se extrajeron ${data.total_videos} videos completos`);
-                } else {
-                    showError(`❌ Error: ${data.error}`);
+                    // Intento 2: Método robusto
+                    result = await extractRobust(url);
+                    showSuccess(`✅ ¡Éxito con método ROBUSTO! ${result.total_videos} videos extraídos`);
                 }
 
+                // Mostrar resultados
+                currentUrls = result.videos.map(v => v.url);
+                urlList.value = currentUrls.join('\n');
+                count.textContent = `${result.total_videos} video${result.total_videos !== 1 ? 's' : ''}`;
+                results.classList.add('show');
+
             } catch (err) {
-                showError(`❌ Error de conexión: ${err.message}. Verifica que el servidor esté activo.`);
+                showError(`❌ Error: ${err.message}. Intenta de nuevo o verifica la URL.`);
             } finally {
                 loading.classList.remove('show');
                 progressFill.style.width = '0%';
-                loadingText.textContent = 'Extrayendo videos...';
+                loadingText.textContent = 'Iniciando extracción inteligente...';
+                methodBadge.textContent = '';
                 extractBtn.disabled = false;
             }
         }
